@@ -9,7 +9,7 @@ import {listProductsDetails} from '../actions/productActions'
 
 
 const ProductScreen = () => {
-    const [qty,setQty] = useState(0)
+    const [qty,setQty] = useState(1)
     const navigate = useNavigate();
     const dispatch = useDispatch()
     const params = useParams();
@@ -21,7 +21,7 @@ const ProductScreen = () => {
     },[dispatch,params])
 
     const addToCartHandler = () => {
-        navigate(`/cart/${params.id}?quantity=${qty}`);
+        navigate(`/cart/${params.id}?qty=${qty}`);
     }
 
   return (
