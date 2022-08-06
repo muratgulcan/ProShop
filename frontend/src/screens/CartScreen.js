@@ -2,7 +2,6 @@ import React,{useEffect} from 'react'
 import {useDispatch,useSelector} from 'react-redux'
 import {Link, useNavigate, useParams,useLocation} from 'react-router-dom'
 import Message from '../components/Message';
-import Loader from '../components/Loader';
 import {Row,Col,Image,ListGroup,Card,Button, Form} from 'react-bootstrap'
 import {addToCart,removeFromCart} from '../actions/cartActions'
 

@@ -20,8 +20,6 @@ const ProfileScreen = () => {
     const userLogin = useSelector(state => state.userLogin)
     const {userInfo} = userLogin
 
-    const userUpdateProfile = useSelector(state => state.userUpdateProfile)
-    const {success} = userUpdateProfile
 
 
     useEffect(() => {
