@@ -2,13 +2,14 @@ import { configureStore } from '@reduxjs/toolkit'
 import thunk from 'redux-thunk'
 import { productListReducer,productDetailsReducer } from './reducers/productReducers'
 import { cartReducer } from './reducers/cartReducers'
-import { userLoginReducer } from './reducers/userReducer'
+import { userLoginReducer, userRegisterReducer } from './reducers/userReducer'
  
 const reducer = {
     productList: productListReducer,
     productDetails: productDetailsReducer,
     cart:cartReducer,
-    userLogin:userLoginReducer
+    userLogin:userLoginReducer,
+    userRegister: userRegisterReducer
 }
 
 const cartItemsFromStorage = localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems')) : []
