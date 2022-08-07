@@ -1,16 +1,22 @@
-import React, { useEffect } from 'react'
+import React, { useEffect,useState } from 'react'
 import { Link,useNavigate,useParams } from 'react-router-dom'
 import { Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
-import { getOrderDetails } from '../actions/orderActions'
+import { getOrderDetails,payOrder } from '../actions/orderActions'
 
 const OrderScreen = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate();
     const params = useParams()
     const orderId = params.id
+    const [email,setEmail] = useState()
+
+    const userLogin = useSelector(state => state.userLogin)
+    const {userInfo} = userLogin
+
+    const orderPay = useSelector(state => state.orderPay)
 
     const orderDetails = useSelector((state) => state.orderDetails)
     const { order, loading, error } = orderDetails
@@ -21,13 +27,18 @@ const OrderScreen = () => {
         order.itemsPrice = addDecimals(
             order.orderItems.reduce((acc, item) => parseInt(acc) + parseInt(item.price) * parseInt(item.qty), 0)
         )
+
     }
     
     useEffect(() => {
-        if(!order || order._id !== orderId) {
-            dispatch(getOrderDetails(orderId))
-        }
-    }, [dispatch, order, orderId]) 
+      if((!order || order._id !== orderId) && userInfo && orderPay) {
+        dispatch(getOrderDetails(orderId))
+      }
+    }, [dispatch, order, orderId,userInfo,orderPay]) 
+
+    const paymentHandler = () => {
+      dispatch(payOrder(orderId,{payer:{email:userInfo.email},status:'COMPLETED',update_time:Date.now(),}))
+    }
   
     return loading ? <Loader/> : error ? <><Message variant='danger'>{error} </Message><Link to={'/'}><Button type='button' variant='primary'>Go back home</Button></Link></> : 
     <>
@@ -122,6 +133,10 @@ const OrderScreen = () => {
                   </Row>
                 </ListGroup.Item>
               </ListGroup>
+              <ListGroup.Item>
+                {orderPay.loading ? <Loader/> :  <Button variant='primary' type='button' className='btn-block' onClick={paymentHandler}>Debit or Credi Cart</Button>}
+               
+              </ListGroup.Item>
             </Card>
           </Col>
         </Row>
