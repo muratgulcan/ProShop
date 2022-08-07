@@ -11,31 +11,25 @@ const OrderScreen = () => {
     const navigate = useNavigate();
     const params = useParams()
     const orderId = params.id
-    const cart = useSelector((state) => state.cart)
-
-    const userLogin = useSelector((state) => state.userLogin)
-    const { userInfo } = userLogin
 
     const orderDetails = useSelector((state) => state.orderDetails)
     const { order, loading, error } = orderDetails
-    if(!loading){
+    if(!loading && loading === undefined){
         const addDecimals = (num) => {
             return (Math.round(num * 100) / 100).toFixed(2)
           }
-        
         order.itemsPrice = addDecimals(
             order.orderItems.reduce((acc, item) => parseInt(acc) + parseInt(item.price) * parseInt(item.qty), 0)
         )
     }
     
-  
     useEffect(() => {
         if(!order || order._id !== orderId) {
             dispatch(getOrderDetails(orderId))
         }
-    }, [order, orderId]) 
+    }, [dispatch, order, orderId]) 
   
-    return loading ? <Loader/> : error ? <Message variant='danger'>{error}</Message> : 
+    return loading ? <Loader/> : error ? <><Message variant='danger'>{error} </Message><Link to={'/'}><Button type='button' variant='primary'>Go back home</Button></Link></> : 
     <>
         <h1>Order {order._id}</h1>
         <Row>
