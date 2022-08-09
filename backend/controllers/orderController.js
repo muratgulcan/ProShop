@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 // @route    GET /api/orders
 // @access   Private
 const addOrderItems = asyncHandler(async (req,res) => {
+
     const {orderItems,shippingAddress,paymentMethod,itemsPrice,taxPrice,shippingPrice,totalPrice} = req.body
     if(orderItems && orderItems.length === 0 ){
         res.status(400)
@@ -24,19 +25,25 @@ const addOrderItems = asyncHandler(async (req,res) => {
 // @route   GET /api/orders/:id
 // @access  Private
 const getOrderById = asyncHandler(async (req, res) => {
-    if (mongoose.Types.ObjectId.isValid(req.params.id)) {
-      const order = await Order.findById(req.params.id).populate('user','name email')
+  if (mongoose.Types.ObjectId.isValid(req.params.id)) {
+    const order = await Order.findById(req.params.id).populate('user','name email')
+    if((req.user._id).toString() === (order.user._id).toString()){
       if (order) {
         res.json(order)
       } else {
         res.status(404).json({
           message: "Order not found",
-      });
+        });
       }
     }else {
       res.status(404).json({
-          message: "Invalid ID. Order not found",
+          message: "Oops...",
       });
+    }
+  }else {
+    res.status(404).json({
+        message: "Invalid ID. Order not found",
+    });
   }
 })
 
@@ -66,8 +73,16 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
     res.status(404).json({
         message: "Invalid ID. Order not found",
     });
-}
+  }
+})
+
+// @desc    Get logged in user orders
+// @route   PUT /api/orders/myorders
+// @access  Private
+const getMyOrders = asyncHandler(async (req, res) => {
+  const orders = await Order.find({ user: req.user._id })
+  res.json(orders)
 })
 
 
-module.exports = {addOrderItems,getOrderById,updateOrderToPaid}
+module.exports = {addOrderItems,getOrderById,updateOrderToPaid,getMyOrders}

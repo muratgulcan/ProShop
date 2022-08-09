@@ -1,5 +1,7 @@
 import axios from 'axios'
-import { USER_DETAILS_FAIL, USER_DETAILS_REQUEST, USER_DETAILS_SUCCESS, USER_LOGIN_FAIL, USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGOUT, USER_REGISTER_FAIL, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS, USER_UPDATE_PROFILE_FAIL, USER_UPDATE_PROFILE_REQUEST, USER_UPDATE_PROFILE_SUCCESS } from '../constants/userConstants'
+import { USER_DETAILS_FAIL, USER_DETAILS_REQUEST, USER_DETAILS_SUCCESS, USER_LOGIN_FAIL, USER_LOGIN_REQUEST,USER_DETAILS_RESET, USER_LOGIN_SUCCESS, USER_LOGOUT, USER_REGISTER_FAIL, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS, USER_UPDATE_PROFILE_FAIL, USER_UPDATE_PROFILE_REQUEST, USER_UPDATE_PROFILE_SUCCESS } from '../constants/userConstants'
+import {ORDER_LIST_MY_RESET} from '../constants/orderConstants'
+import { CART_ITEMS_RESET } from "../constants/cartConstants"
 import { toast } from 'react-toastify';
 
 export const login = (email,password) => async (dispatch) => {
@@ -56,10 +58,14 @@ export const register = (name,email,password) => async (dispatch) => {
 
 export const logout = () => (dispatch) => {
     localStorage.removeItem('userInfo')
+    dispatch({ type:USER_LOGOUT })
+    dispatch({ type:USER_DETAILS_RESET })
+    dispatch({ type:ORDER_LIST_MY_RESET })
     dispatch({
-        type:USER_LOGOUT
-    })
-    window.location.reload()
+        type: CART_ITEMS_RESET,
+      })
+    localStorage.removeItem('cartItems')
+    window.location.href = '/'
 }
 
 export const getUserDetails = (id) => async (dispatch,getState) => {
