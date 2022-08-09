@@ -1,6 +1,7 @@
 import React from 'react';
 import {Link,useNavigate} from 'react-router-dom'
 import {Navbar,Nav,Container, NavDropdown} from 'react-bootstrap';
+import {LinkContainer} from 'react-router-bootstrap'
 import {useDispatch,useSelector} from 'react-redux'
 import { logout } from '../actions/userActions';
 
@@ -37,7 +38,25 @@ const Header = () => {
                     ) : (
                       <Nav.Link as={Link} to="/login"><i className="fas fa-user"></i> Sign In</Nav.Link>
                     )}
-                    
+                    {userInfo && userInfo.isAdmin && (
+                      <NavDropdown title='Admin' id="adminmenu">
+                        <LinkContainer to='/admin/userlist'>
+                          <NavDropdown.Item>
+                            Users
+                          </NavDropdown.Item>
+                        </LinkContainer>
+                        <LinkContainer to='/admin/productlist'>
+                          <NavDropdown.Item>
+                            Products
+                          </NavDropdown.Item>
+                        </LinkContainer>
+                        <LinkContainer to='/admin/orderlist'>
+                          <NavDropdown.Item>
+                            Orders
+                          </NavDropdown.Item>
+                        </LinkContainer>
+                      </NavDropdown>
+                    )}
                 </Nav>
                 </Navbar.Collapse>
             </Container>
