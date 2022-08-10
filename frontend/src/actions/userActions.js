@@ -117,7 +117,7 @@ export const updateUserProfile = (user) => async (dispatch,getState) => {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-            });
+        });
     } catch (error) {
         dispatch({
             type:USER_UPDATE_PROFILE_FAIL,
@@ -217,6 +217,15 @@ export const updateUser = (user) => async (dispatch, getState) => {
 
       dispatch({ type: USER_UPDATE_SUCCESS })
       dispatch({ type:USER_EDIT_RESET })
+      toast.success('User updated', {
+        position: "bottom-right",
+        autoClose: 3500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
 
     } catch (error) {
       const message =

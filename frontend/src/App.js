@@ -15,6 +15,7 @@ import PlaceOrderScreen from './screens/PlaceOrderScreen';
 import OrderScreen from './screens/OrderScreen';
 import UserListScreen from './screens/UserListScreen';
 import UserEditScreen from './screens/UserEditScreen';
+import ProductListScreen from './screens/ProductListScreen';
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -34,6 +35,7 @@ const App = () => {
                     <Route path='/placeholder' element={<PlaceOrderScreen />}  />
                     <Route path='/admin/userlist' element={<UserListScreen />}  />
                     <Route path='/admin/user/:id/edit' element={<UserEditScreen />}  />
+                    <Route path='/admin/productlist' element={<ProductListScreen />}  />
                     <Route path='/product/:id' element={<ProductScreen />} />
                     <Route path='/order/:id' element={<OrderScreen />} />
                     <Route path='/cart'>
