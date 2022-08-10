@@ -4,8 +4,10 @@ import {LinkContainer} from 'react-router-bootstrap'
 import {useDispatch,useSelector} from 'react-redux'
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import { listUsers } from '../actions/userActions'
 import { useNavigate } from 'react-router-dom';
+import { listUsers,deleteUser } from '../actions/userActions'
+import Swal from 'sweetalert2'
+
 
 const UserListScreen = () => {
     const dispatch = useDispatch()
@@ -16,16 +18,31 @@ const UserListScreen = () => {
 
     const userLogin = useSelector(state => state.userLogin)
     const {userInfo} = userLogin
+
+    const userDelete = useSelector(state => state.userDelete)
+    const {success:successDelete} = userDelete
+
     useEffect(() => {
         if(!userInfo || userInfo.isAdmin !== true){
             navigate('/')
         }else{
             dispatch(listUsers())
         }
-    },[dispatch,navigate,userInfo])
+    },[dispatch,navigate,userInfo,successDelete])
 
     const deleteHandler = (id) => {
-        console.log(id);
+        Swal.fire({
+            title: 'Do you want remove the user?',
+            showDenyButton: true,
+            confirmButtonText: 'Yes',
+            denyButtonText: `No`,
+          }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                dispatch(deleteUser(id))
+                Swal.fire('Saved!', '', 'success')
+            }
+          })
     }
 
   return (
