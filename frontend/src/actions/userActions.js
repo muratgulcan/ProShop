@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { USER_DETAILS_FAIL,USER_LIST_RESET, USER_DETAILS_REQUEST, USER_LIST_REQUEST,USER_LIST_SUCCESS,USER_LIST_FAIL,USER_DETAILS_SUCCESS, USER_LOGIN_FAIL, USER_LOGIN_REQUEST,USER_DETAILS_RESET, USER_LOGIN_SUCCESS, USER_LOGOUT, USER_REGISTER_FAIL, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS, USER_UPDATE_PROFILE_FAIL, USER_UPDATE_PROFILE_REQUEST, USER_UPDATE_PROFILE_SUCCESS, USER_DELETE_REQUEST, USER_DELETE_SUCCESS, USER_DELETE_FAIL } from '../constants/userConstants'
+import { USER_DETAILS_FAIL,USER_LIST_RESET, USER_DETAILS_REQUEST, USER_LIST_REQUEST,USER_LIST_SUCCESS,USER_LIST_FAIL,USER_DETAILS_SUCCESS, USER_LOGIN_FAIL, USER_LOGIN_REQUEST,USER_DETAILS_RESET, USER_LOGIN_SUCCESS, USER_LOGOUT, USER_REGISTER_FAIL, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS, USER_UPDATE_PROFILE_FAIL, USER_UPDATE_PROFILE_REQUEST, USER_UPDATE_PROFILE_SUCCESS, USER_DELETE_REQUEST, USER_DELETE_SUCCESS, USER_DELETE_FAIL, USER_UPDATE_REQUEST, USER_UPDATE_SUCCESS, USER_UPDATE_FAIL, USER_EDIT_REQUEST, USER_EDIT_SUCCESS, USER_EDIT_FAIL, USER_EDIT_RESET } from '../constants/userConstants'
 import {ORDER_LIST_MY_RESET} from '../constants/orderConstants'
 import { CART_ITEMS_RESET } from "../constants/cartConstants"
 import { toast } from 'react-toastify';
@@ -161,7 +161,7 @@ export const deleteUser = (id) => async (dispatch,getState) => {
                 Authorization:`Bearer ${userInfo.token}`
             }
         }
-        const {data} = await axios.delete(`/api/users/${id}`,config)
+        await axios.delete(`/api/users/${id}`,config)
         dispatch({ type:USER_DELETE_SUCCESS })
     } catch (error) {
         dispatch({
@@ -170,3 +170,65 @@ export const deleteUser = (id) => async (dispatch,getState) => {
         })
     }
 }
+
+export const getEditUser = (id) => async (dispatch,getState) => {
+    try {
+        dispatch({
+            type:USER_EDIT_REQUEST
+        })
+        const { userLogin: {userInfo}} = getState()
+        const config = {
+            headers: {
+                'Content-Type':'application/json',
+                Authorization:`Bearer ${userInfo.token}`
+            }
+        }
+        const {data} = await axios.get(`/api/users/${id}`,config)
+        dispatch({
+            type:USER_EDIT_SUCCESS,
+            payload:data
+        })
+    } catch (error) {
+        dispatch({
+            type:USER_EDIT_FAIL,
+            payload:error.response && error.response.data.message ? error.response.data.message : error.message
+        })
+    }
+}
+
+export const updateUser = (user) => async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: USER_UPDATE_REQUEST,
+      })
+  
+      const {
+        userLogin: { userInfo },
+      } = getState()
+  
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      }
+  
+      await axios.put(`/api/users/${user._id}`, user, config)
+
+      dispatch({ type: USER_UPDATE_SUCCESS })
+      dispatch({ type:USER_EDIT_RESET })
+
+    } catch (error) {
+      const message =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+      if (message === 'Not authorized, token failed') {
+        dispatch(logout())
+      }
+      dispatch({
+        type: USER_UPDATE_FAIL,
+        payload: message,
+      })
+    }
+  }
