@@ -198,46 +198,44 @@ export const getEditUser = (id) => async (dispatch,getState) => {
 
 export const updateUser = (user) => async (dispatch, getState) => {
     try {
-      dispatch({
-        type: USER_UPDATE_REQUEST,
-      })
-  
-      const {
-        userLogin: { userInfo },
-      } = getState()
-  
-      const config = {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${userInfo.token}`,
-        },
-      }
-  
-      await axios.put(`/api/users/${user._id}`, user, config)
-
-      dispatch({ type: USER_UPDATE_SUCCESS })
-      dispatch({ type:USER_EDIT_RESET })
-      toast.success('User updated', {
-        position: "bottom-right",
-        autoClose: 3500,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
+        dispatch({
+            type: USER_UPDATE_REQUEST,
+        })
+        const {
+            userLogin: { userInfo },
+        } = getState()
+        
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`,
+            },
+        }
+        
+        await axios.put(`/api/users/${user._id}`, user, config)
+        dispatch({ type: USER_UPDATE_SUCCESS })
+        dispatch({ type:USER_EDIT_RESET })
+        toast.success('User updated', {
+            position: "bottom-right",
+            autoClose: 3500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
         });
 
-    } catch (error) {
-      const message =
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message
-      if (message === 'Not authorized, token failed') {
-        dispatch(logout())
-      }
-      dispatch({
-        type: USER_UPDATE_FAIL,
-        payload: message,
-      })
-    }
+        } catch (error) {
+            const message =
+                error.response && error.response.data.message
+                ? error.response.data.message
+                : error.message
+            if (message === 'Not authorized, token failed') {
+                dispatch(logout())
+            }
+            dispatch({
+                type: USER_UPDATE_FAIL,
+                payload: message,
+            })
+        }
   }
