@@ -5,6 +5,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 import { getOrderDetails,payOrder } from '../actions/orderActions'
+import {
+  ORDER_PAY_RESET,
+} from '../constants/orderConstants'
 
 const OrderScreen = () => {
     const dispatch = useDispatch()
@@ -15,6 +18,7 @@ const OrderScreen = () => {
     const {userInfo} = userLogin
 
     const orderPay = useSelector(state => state.orderPay)
+    const { loading: loadingPay, success: successPay } = orderPay
 
     const orderDetails = useSelector((state) => state.orderDetails)
     const { order, loading, error } = orderDetails
@@ -29,10 +33,11 @@ const OrderScreen = () => {
     }
     
     useEffect(() => {
-      if((!order || order._id !== orderId) && userInfo && orderPay) {
+      if (!order || successPay || order._id !== orderId) {
+        dispatch({ type: ORDER_PAY_RESET })
         dispatch(getOrderDetails(orderId))
       }
-    }, [dispatch, order, orderId,userInfo,orderPay]) 
+    }, [dispatch, orderId, successPay, order])
 
     const paymentHandler = () => {
       dispatch(payOrder(orderId,{payer:{email:userInfo.email},status:'COMPLETED',update_time:Date.now(),}))
@@ -90,7 +95,7 @@ const OrderScreen = () => {
                             </Link>
                           </Col>
                           <Col md={4}>
-                            {item.qty} x ${item.price} = ${item.qty * item.price}
+                            {item.qty} x ${item.price} = ${(item.qty * item.price).toFixed(2)}
                           </Col>
                         </Row>
                       </ListGroup.Item>
