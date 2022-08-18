@@ -17,8 +17,9 @@ const RegisterScreen = () => {
     const [confirmPassword,setConfirmPassword] = useState('')
     const [message,setMessage] = useState(null)
     const redirect = location.search ? location.search.split('=')[1] : '/'
-    const userRegister = useSelector(state => state.userRegister)
-    const {loading,error,userInfo} = userRegister
+    const userLogin = useSelector(state => state.userLogin)
+    const {loading,error,userInfo} = userLogin
+    console.log(userInfo);
     useEffect(() => {
         if(userInfo){
             navigate(redirect)
